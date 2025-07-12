@@ -2,12 +2,12 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Мои Альбомы</title>
+    <title>Мои Альбомы и Плейлисты</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             padding: 20px;
-            background-color: #f9f9f9;
+            background-color: #f4f4f4;
         }
         h1 {
             color: #333;
@@ -17,15 +17,20 @@
             padding: 0;
         }
         li {
+            background: white;
             padding: 10px;
             margin: 5px 0;
-            background: white;
-            border-radius: 4px;
-            box-shadow: 0 0 3px rgba(0,0,0,0.1);
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .empty {
+            color: #999;
+            font-style: italic;
         }
     </style>
 </head>
 <body>
+
     <h1>💿 Альбомы</h1>
     <ul id="albums">Загрузка...</ul>
 
@@ -33,11 +38,13 @@
     <ul id="playlists">Загрузка...</ul>
 
     <script>
-        const apiUrl = "https://liveinnfrt.pythonanywhere.com/api/data";
+        const apiUrl = "https://liveinnfrt.pythonanywhere.com/api/data"; // ⬅ Замени на свой
 
-        fetch(apiUrl)
-            .then(res => res.json())
-            .then(data => {
+        async function loadCollections() {
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+
                 const albumsList = document.getElementById("albums");
                 const playlistsList = document.getElementById("playlists");
 
@@ -45,38 +52,42 @@
                 playlistsList.innerHTML = "";
 
                 if (data.albums.length === 0) {
-                    const emptyItem = document.createElement("li");
-                    emptyItem.style.color = "#999";
-                    emptyItem.textContent = "Нет доступных альбомов";
-                    albumsList.appendChild(emptyItem);
+                    const emptyAlbum = document.createElement("li");
+                    emptyAlbum.textContent = "Нет доступных альбомов";
+                    emptyAlbum.className = "empty";
+                    albumsList.appendChild(emptyAlbum);
                 } else {
                     data.albums.forEach(album => {
-                        const li = document.createElement("li");
-                        li.textContent = album;
-                        albumsList.appendChild(li);
+                        const item = document.createElement("li");
+                        item.textContent = album;
+                        albumsList.appendChild(item);
                     });
                 }
 
                 if (data.playlists.length === 0) {
-                    const emptyItem = document.createElement("li");
-                    emptyItem.style.color = "#999";
-                    emptyItem.textContent = "Нет доступных плейлистов";
-                    playlistsList.appendChild(emptyItem);
+                    const emptyPlaylist = document.createElement("li");
+                    emptyPlaylist.textContent = "Нет доступных плейлистов";
+                    emptyPlaylist.className = "empty";
+                    playlistsList.appendChild(emptyPlaylist);
                 } else {
                     data.playlists.forEach(pl => {
-                        const li = document.createElement("li");
-                        li.textContent = pl;
-                        playlistsList.appendChild(li);
+                        const item = document.createElement("li");
+                        item.textContent = pl;
+                        playlistsList.appendChild(item);
                     });
                 }
 
-            })
-            .catch(err => {
-                console.error("Ошибка загрузки:", err);
+            } catch (error) {
+                console.error("Ошибка:", error);
 
-                document.getElementById("albums").innerHTML = "<li style='color: red;'>Ошибка загрузки альбомов</li>";
-                document.getElementById("playlists").innerHTML = "<li style='color: red;'>Ошибка загрузки плейлистов</li>";
-            });
+                albumsList.innerHTML = "<li style='color: red;'>Ошибка загрузки альбомов</li>";
+                playlistsList.innerHTML = "<li style='color: red;'>Ошибка загрузки плейлистов</li>";
+            }
+        }
+
+        window.onload = () => {
+            loadCollections();
+        };
     </script>
 </body>
 </html>
