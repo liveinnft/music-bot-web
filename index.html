@@ -2,45 +2,105 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Мои Альбомы</title>
+    <title>Мои Альбомы и Плейлисты</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        body { font-family: Arial; padding: 20px; background: #f9f9f9; }
-        h1 { color: #333; }
-        ul { list-style: none; padding: 0; }
-        li { padding: 10px; margin: 5px 0; background: white; border-radius: 4px; box-shadow: 0 0 3px rgba(0,0,0,0.1); }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+            color: #333;
+        }
+        h1 {
+            color: #2c3e50;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background: white;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .empty {
+            color: #999;
+            font-style: italic;
+        }
+        footer {
+            margin-top: 40px;
+            font-size: 0.9em;
+            color: #777;
+        }
     </style>
 </head>
 <body>
+
     <h1>💿 Альбомы</h1>
     <ul id="albums">Загрузка...</ul>
 
     <h1>🎶 Плейлисты</h1>
     <ul id="playlists">Загрузка...</ul>
 
+    <footer>
+        <p>Данные загружаются с сервера бота в реальном времени.</p>
+    </footer>
+
     <script>
-        const apiUrl = "https://liveinnfrt.pythonanywhere.com/api/data";
+        const apiUrl = "https://liveinnfrt.pythonanywhere.com/api/data"; // ⬅️ Замени на свой URL
 
-        fetch(apiUrl)
-            .then(res => res.json())
-            .then(data => {
+        async function loadData() {
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+
                 const albumsList = document.getElementById("albums");
-                data.albums.forEach(album => {
-                    const li = document.createElement("li");
-                    li.textContent = album;
-                    albumsList.appendChild(li);
-                });
-
                 const playlistsList = document.getElementById("playlists");
-                data.playlists.forEach(pl => {
-                    const li = document.createElement("li");
-                    li.textContent = pl;
-                    playlistsList.appendChild(li);
-                });
-            })
-            .catch(() => {
-                document.getElementById("albums").textContent = "Ошибка загрузки альбомов";
-                document.getElementById("playlists").textContent = "Ошибка загрузки плейлистов";
-            });
+
+                albumsList.innerHTML = "";
+                playlistsList.innerHTML = "";
+
+                if (data.albums.length === 0) {
+                    const emptyAlbumItem = document.createElement("li");
+                    emptyAlbumItem.className = "empty";
+                    emptyAlbumItem.textContent = "Нет доступных альбомов.";
+                    albumsList.appendChild(emptyAlbumItem);
+                } else {
+                    data.albums.forEach(album => {
+                        const item = document.createElement("li");
+                        item.textContent = album;
+                        albumsList.appendChild(item);
+                    });
+                }
+
+                if (data.playlists.length === 0) {
+                    const emptyPlaylistItem = document.createElement("li");
+                    emptyPlaylistItem.className = "empty";
+                    emptyPlaylistItem.textContent = "Нет доступных плейлистов.";
+                    playlistsList.appendChild(emptyPlaylistItem);
+                } else {
+                    data.playlists.forEach(playlist => {
+                        const item = document.createElement("li");
+                        item.textContent = playlist;
+                        playlistsList.appendChild(item);
+                    });
+                }
+
+            } catch (error) {
+                console.error("Ошибка загрузки данных:", error);
+
+                document.getElementById("albums").innerHTML = "<li class='empty'>Ошибка загрузки альбомов</li>";
+                document.getElementById("playlists").innerHTML = "<li class='empty'>Ошибка загрузки плейлистов</li>";
+            }
+        }
+
+        // Загружаем данные при открытии страницы
+        window.onload = () => {
+            loadData();
+        };
     </script>
+
 </body>
 </html>
