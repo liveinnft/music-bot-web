@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Мои Альбомы и Плейлисты</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #333;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            padding: 8px 12px;
+            margin: 5px 0;
+            background: #fff;
+            border-radius: 4px;
+            box-shadow: 0 0 3px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <h1>💿 Альбомы</h1>
+    <ul id="albums">Загрузка альбомов...</ul>
+
+    <h1>🎶 Плейлисты</h1>
+    <ul id="playlists">Загрузка плейлистов...</ul>
+
+    <script>
+        fetch('https://ваш_логин.github.io/music-bot-web/data.json')
+            .then(res => res.json())
+            .then(data => {
+                const albumsList = document.getElementById("albums");
+                data.albums.forEach(album => {
+                    const li = document.createElement("li");
+                    li.textContent = album;
+                    albumsList.appendChild(li);
+                });
+
+                const playlistsList = document.getElementById("playlists");
+                data.playlists.forEach(pl => {
+                    const li = document.createElement("li");
+                    li.textContent = pl;
+                    playlistsList.appendChild(li);
+                });
+            })
+            .catch(() => {
+                document.getElementById("albums").textContent = "Ошибка загрузки альбомов";
+                document.getElementById("playlists").textContent = "Ошибка загрузки плейлистов";
+            });
+    </script>
+</body>
+</html>
