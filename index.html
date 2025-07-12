@@ -4,36 +4,21 @@
     <meta charset="UTF-8">
     <title>Мои Альбомы и Плейлисты</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            background-color: #f9f9f9;
-        }
-        h1 {
-            color: #333;
-        }
-        ul {
-            list-style: none;
-            padding: 0;
-        }
-        li {
-            padding: 8px 12px;
-            margin: 5px 0;
-            background: #fff;
-            border-radius: 4px;
-            box-shadow: 0 0 3px rgba(0,0,0,0.1);
-        }
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f9f9f9; }
+        h1 { color: #333; }
+        ul { list-style: none; padding: 0; }
+        li { padding: 10px; margin: 5px 0; background: white; border-radius: 4px; box-shadow: 0 0 3px rgba(0,0,0,0.1); }
     </style>
 </head>
 <body>
     <h1>💿 Альбомы</h1>
-    <ul id="albums">Загрузка альбомов...</ul>
+    <ul id="albums">Загрузка...</ul>
 
     <h1>🎶 Плейлисты</h1>
-    <ul id="playlists">Загрузка плейлистов...</ul>
+    <ul id="playlists">Загрузка...</ul>
 
     <script>
-        fetch('https://ваш_логин.github.io/music-bot-web/data.json')
+        fetch('http://localhost:5000/api/data')
             .then(res => res.json())
             .then(data => {
                 const albumsList = document.getElementById("albums");
