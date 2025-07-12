@@ -2,12 +2,12 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Мои Альбомы и Плейлисты</title>
+    <title>Мои Альбомы</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             padding: 20px;
-            background-color: #f4f4f4;
+            background-color: #f9f9f9;
         }
         h1 {
             color: #333;
@@ -17,11 +17,11 @@
             padding: 0;
         }
         li {
-            background: white;
             padding: 10px;
             margin: 5px 0;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 0 3px rgba(0,0,0,0.1);
         }
         .empty {
             color: #999;
@@ -38,11 +38,13 @@
     <ul id="playlists">Загрузка...</ul>
 
     <script>
-        const apiUrl = "https://liveinnfrt.pythonanywhere.com/api/data"; // ⬅ Замени на свой
+        const apiUrl = "https://liveinnfrt.pythonanywhere.com/api/data ";
 
         async function loadCollections() {
             try {
                 const response = await fetch(apiUrl);
+                if (!response.ok) throw new Error("Ошибка сети");
+
                 const data = await response.json();
 
                 const albumsList = document.getElementById("albums");
@@ -78,10 +80,10 @@
                 }
 
             } catch (error) {
-                console.error("Ошибка:", error);
+                console.error("Ошибка загрузки:", error);
 
-                albumsList.innerHTML = "<li style='color: red;'>Ошибка загрузки альбомов</li>";
-                playlistsList.innerHTML = "<li style='color: red;'>Ошибка загрузки плейлистов</li>";
+                document.getElementById("albums").innerHTML = "<li class='empty'>Ошибка загрузки альбомов</li>";
+                document.getElementById("playlists").innerHTML = "<li class='empty'>Ошибка загрузки плейлистов</li>";
             }
         }
 
@@ -89,5 +91,6 @@
             loadCollections();
         };
     </script>
+
 </body>
 </html>
