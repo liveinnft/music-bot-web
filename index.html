@@ -2,9 +2,9 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Мои Альбомы и Плейлисты</title>
+    <title>Мои Альбомы</title>
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; background: #f9f9f9; }
+        body { font-family: Arial; padding: 20px; background: #f9f9f9; }
         h1 { color: #333; }
         ul { list-style: none; padding: 0; }
         li { padding: 10px; margin: 5px 0; background: white; border-radius: 4px; box-shadow: 0 0 3px rgba(0,0,0,0.1); }
@@ -18,7 +18,9 @@
     <ul id="playlists">Загрузка...</ul>
 
     <script>
-        fetch('http://localhost:5000/api/data')
+        const apiUrl = "https://liveinnftr.pythonanywhere.com/api/data";
+
+        fetch(apiUrl)
             .then(res => res.json())
             .then(data => {
                 const albumsList = document.getElementById("albums");
